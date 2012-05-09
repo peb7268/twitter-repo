@@ -1,0 +1,29 @@
+<!doctype html>
+<!--[if IE 7]><html class="ie7"> <![endif]-->
+<!--[if IE 8]><html class="ie8"> <![endif]-->
+<!--[if !IE]><!--><html><!--<![endif]-->
+
+<head>
+	<title>TweetWall</title>
+    <script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
+    <script src="http://cloud.github.com/downloads/wycats/handlebars.js/handlebars-1.0.0.beta.6.js"></script>
+    
+    
+    <link language="text/css" rel="stylesheet" href="style.css"></link>
+</head>
+<body>
+
+<ul id="twee-tainer">
+	<script id="tweets-template" type="text/x-handlebars-template">
+		{{#each this}}
+		<li>
+			<a href="{{url}}"><img src="{{thumb}}" alt="{{author}}"></a>
+			<p class="the_tweet hidden"><a href="{{url}}">{{tweet_text}}</a></p>
+		</li>
+		{{/each}}
+	</script>	
+</ul>
+
+<script type="text/javascript" src="app.js"></script>
+</body>
+</html>

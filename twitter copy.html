@@ -1,0 +1,171 @@
+<!doctype html>
+<!--[if IE 7]><html class="ie7"> <![endif]-->
+<!--[if IE 8]><html class="ie8"> <![endif]-->
+<!--[if !IE]><!--><html><!--<![endif]-->
+
+<head>
+	<title>Twitter Widget</title>
+    <script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
+    <script src="http://cloud.github.com/downloads/wycats/handlebars.js/handlebars-1.0.0.beta.6.js"></script>
+     
+     
+     <style type="text/css">
+     	.hidden{ display: none; }
+     	body { 
+     		background: #000;  
+     		margin: 0;
+     		padding: 0;
+     	}
+     	#twee-tainer { 
+     		width: 100%; 
+     		margin: 0;
+     		padding: 0;
+     	}
+     	#twee-tainer li { 
+	     	list-style: none; 
+	     	float: left; 
+	     	margin: 0; 
+	     	width: 48px; 
+	     	height: 48px; 
+	     	display: block;
+	     	padding: 0;
+	     	position: relative;
+     	}
+     	#twee-tainer li img {
+     		opacity: .3;
+     	}
+     	p.the_tweet {  
+     		position: absolute; 
+     		z-index: 10;
+     		top: 47px;
+     		left: -150px;
+     		margin: 0px; 
+			padding: 0px;
+     	}
+     	p.the_tweet a {
+		background: #EEE;
+		color: #0096C3;
+		display: block;
+		padding: 20px;
+		text-decoration: none;
+		width: 300px;
+		border: 1px solid white;
+		box-shadow: 0px 0px 9px #000;
+     	}
+     </style>
+</head>
+<body>
+
+<ul id="twee-tainer">
+	<script id="tweets-template" type="text/x-handlebars-template">
+		{{#each this}}
+		<li>
+			<a href="{{url}}"><img src="{{thumb}}" alt="{{author}}"></a>
+			<p class="the_tweet hidden"><a href="{{url}}">{{tweet_text}}</a></p>
+		</li>
+		{{/each}}
+	</script>	
+</ul>
+
+<script type="text/javascript">
+
+(function($){    
+	var Twitter = {
+		init: function( config ) {
+			this.url = 'http://search.twitter.com/search.json?q=' + config.query + '&rpp=100&callback=?';
+			this.template = config.template;
+			this.container = config.container;
+
+			this.get_tweets();
+		},
+		attachTemplate: function() {
+			var template = Handlebars.compile( this.template );
+
+			this.container.append( template( this.tweets ) );
+
+		},
+
+		get_tweets: function(){
+			var self = this;
+			//console.log(self);
+		    $.getJSON( this.url , function( data ){			
+					
+					self.tweets = $.map(data.results, function(tweet){
+						return {
+							author: tweet.from_user,
+							tweet_text: tweet.text,
+							thumb: tweet.profile_image_url,
+							url: 'http://twitter.com/' + tweet.from_user + '/status/' + tweet.id_str
+						};
+					});
+					//callback here. Prefrm all async stuff here
+					self.attachTemplate(); 
+					$('ul#twee-tainer li,ul#twee-tainer li a').hover(function(){
+						$(this).css({
+						cursor: 'pointer'
+					});
+					$(this).find('img').animate(
+					{
+						opacity: 1
+					}, 200)
+						
+					}, 
+					function(){
+					$(this).find('img').animate(
+					{
+						opacity: .3
+					}, 200)
+					$('.hidden:visible').fadeOut(300);
+					});
+					
+					$('ul#twee-tainer li > a').click(function(event){
+						event.preventDefault();
+						$(this).next().fadeIn();	
+					});
+					$('ul#twee-tainer li p.hidden a').click(function(){
+						return true;
+					});
+			  });
+		  }
+	}
+	var results = Twitter.init({
+		template: $('#tweets-template').html(),
+		container: $('#twee-tainer'),
+		query: 'marketing'
+	});
+	
+	var results2 = Twitter.init({
+		template: $('#tweets-template').html(),
+		container: $('#twee-tainer'),
+		query: 'seo'
+	});
+	var results3 = Twitter.init({
+		template: $('#tweets-template').html(),
+		container: $('#twee-tainer'),
+		query: 'the morrison agency'
+	});
+	var results = Twitter.init({
+		template: $('#tweets-template').html(),
+		container: $('#twee-tainer'),
+		query: 'search engine marketing'
+	});
+	
+	var results2 = Twitter.init({
+		template: $('#tweets-template').html(),
+		container: $('#twee-tainer'),
+		query: 'social media'
+	});
+	var results3 = Twitter.init({
+		template: $('#tweets-template').html(),
+		container: $('#twee-tainer'),
+		query: 'analytics'
+	});
+
+	  	
+})(jQuery);
+
+
+</script>
+
+</body>
+</html>
